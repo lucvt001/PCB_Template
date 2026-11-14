@@ -223,7 +223,7 @@ report, so the user knows which evidence paths are available.
 | Path | Contents |
 |---|---|
 | `pcb/` | KiCad project: `.kicad_pro`, `.kicad_sch`, `.kicad_pcb` (source of truth) |
-| `pcb/sym/`, `pcb/fp/`, `pcb/step/` | Project-local symbols, footprints (`.pretty`), and optional 3D models |
+| `pcb/sym/`, `pcb/project.pretty/`, `pcb/step/` | Project-local symbols (`.kicad_sym` files in `sym/`), footprints (`project.pretty/`, directly under `pcb/`), and optional 3D models. Both libraries are registered under the name `Project` in `pcb/sym-lib-table` (`${KIPRJMOD}/sym`) and `pcb/fp-lib-table` (`${KIPRJMOD}/project.pretty`); use `Project:<name>` for lib IDs |
 | `pcb/datasheets/` | Datasheets (`<MPN>.pdf`) and evaluation-board PDFs (`<MPN>_EVM.pdf`) |
 | `docs/`, `docs/design_notes/` | Design notes, calculations, user manual |
 | `mechanical/` | Enclosure/housing CAD and exported board STEP |
@@ -318,6 +318,10 @@ when the two answers would give a different board.
 - Do not commit or push unless asked. Never upload, order, or pay on JLCPCB.
 
 ## Commands
+
+Tested `kicad-cli` commands with the matching MCP tools:
+`.claude/skills/pcb-layout-review/references/kicad-adapter.md`. JLCPCB BOM:
+`release-pcba-fabrication/scripts/export_jlcpcb_bom.py`.
 
 Run from `pcb/`. Set `K` to the `kicad-cli` path found in the preflight, e.g.
 `K="/c/Program Files/KiCad/10.0/bin/kicad-cli.exe"` in Git Bash, or call it with

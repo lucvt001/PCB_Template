@@ -37,7 +37,7 @@ status.
 - Gerber, drill, BOM, CPL, 2D assembly plots, and revision-consistent release:
   `/release-pcba-fabrication`.
 - JLCPCB upload, part matching, placement preview, and payment are done by the
-  user. Record their results as evidence for `assembly_placement` and `order`.
+  user; they are not tracked as stages. Note their outcome in `DECISIONS.md` if a fix was needed.
 - Before any stage is set to `PASS`: the user's acceptance, or (when the user asks
   for it) `/adversarial-review` by a fresh, read-only reviewer. Never start a
   review automatically; see `CLAUDE.md`, Human-centric workflow.
@@ -59,9 +59,7 @@ before placement freeze.
 - Invalidate downstream gates after controlled data changes. Use
   `scripts/program_state.py invalidate --change ...`; do not manually preserve
   a stale PASS.
-- Keep substitution, assembly-placement, final-price, and payment approvals
-  separate. Approval at one gate never implies another. Payment is always done by
-  the user; record it only after the user confirms it.
+- Only the substitution approval is tracked. Payment is always done by the user.
 - Respect user intent: review-only requests do not authorize design edits,
   browser mutations, cart changes, or payments.
 - Give workers and reviewers **file paths, not pasted content**, and copy

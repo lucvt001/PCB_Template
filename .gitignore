@@ -41,3 +41,11 @@ pcb/.history
 
 # Local project settings
 *.kicad_prl
+
+# Generated exports in the workflow folder (artifacts and decisions are committed)
+.pcba-workflow/*.svg
+.pcba-workflow/erc.json
+.pcba-workflow/drc*.json
+.pcba-workflow/netlist*.xml
+.pcba-workflow/pos.csv
+.pcba-workflow/reviews/**/export*/

@@ -7,7 +7,7 @@ Write UTF-8 JSON to `.pcba-workflow/schematic-visual-audit.json`:
   "schema": "schematic-visual-audit-v1",
   "status": "PASS|BLOCKED|USER_REVIEW",
   "source_type": "",
-  "adapter": "",
+  "source": "",
   "authoritative_sources": [],
   "baseline_connectivity": "",
   "final_connectivity": "",

@@ -8,10 +8,10 @@ the part's datasheet package drawing and recommended land pattern from
 
 1. KiCad's standard libraries, when the package matches the datasheet exactly.
 2. A manufacturer- or LCSC/JLCPCB-provided footprint, copied into the project
-   library under `pcb/fp/<lib>.pretty` (registered in the project's `fp-lib-table`),
+   library under `pcb/project.pretty` (registered in the project's `fp-lib-table`),
    never referenced from a download folder.
 3. A footprint drawn from the datasheet's recommended land pattern (IPC-7351
-   naming and zero orientation), saved in `pcb/fp/`.
+   naming and zero orientation), saved in `pcb/project.pretty/`.
 
 Symbols come the same way into `pcb/sym/`. 3D models are optional; if present
 they go in `pcb/step/`, and they are not reviewed.

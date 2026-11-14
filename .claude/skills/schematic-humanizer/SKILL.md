@@ -9,9 +9,9 @@ Turn an electrically connected but label-heavy schematic into a diagram a human
 can trace. Preserve the circuit unless the user separately authorizes an
 electrical change. Readability is not electrical approval.
 
-## Establish the adapter
+## Establish the baseline
 
-Before editing, read [references/adapters.md](references/adapters.md) and define:
+Before editing, read [references/canonical-connectivity.md](references/canonical-connectivity.md) and define:
 
 1. Native source of truth, generator, libraries, project rules, and protected
    PCB/layout artifacts.
@@ -94,7 +94,7 @@ controlled interfaces, RF, or manufacturer rules are obvious, also read
 
 ## Completion report
 
-Report adapter, authoritative files, baseline/final counts, comparison result,
+Report authoritative files, baseline/final counts, comparison result,
 ERC/lint before and after, protected-file proof, every rendered page/crop
 inspected, remaining limitations, and the final snapshot. Write
 `.pcba-workflow/schematic-visual-audit.json`. Route circuit-design

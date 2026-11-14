@@ -11,11 +11,10 @@ from pathlib import Path
 
 STAGES = (
     "product_definition", "sourcing", "circuit", "schematic_visual",
-    "placement", "routing", "manufacturing_release", "assembly_placement",
-    "order",
+    "placement", "routing", "manufacturing_release",
 )
 STATUSES = {"PASS", "BLOCKED", "USER_REVIEW"}
-APPROVALS = ("design_critical_substitution", "assembly_placement", "final_price", "payment")
+APPROVALS = ("design_critical_substitution",)
 INVALIDATION = {
     "product-definition": STAGES,
     "netlist": STAGES[2:],
@@ -24,10 +23,10 @@ INVALIDATION = {
     "footprint": STAGES[4:],
     "placement": STAGES[4:],
     "routing": STAGES[5:],
-    "bom": ("sourcing", "manufacturing_release", "assembly_placement", "order"),
-    "cpl": ("manufacturing_release", "assembly_placement", "order"),
-    "browser-placement": ("manufacturing_release", "assembly_placement", "order"),
-    "stock-price": ("sourcing", "order"),
+    "bom": ("sourcing", "manufacturing_release"),
+    "cpl": ("manufacturing_release",),
+    "browser-placement": ("manufacturing_release",),
+    "stock-price": ("sourcing",),
 }
 
 STAGE_PREREQUISITES = {
@@ -36,8 +35,6 @@ STAGE_PREREQUISITES = {
     "placement": ("circuit", "schematic_visual"),
     "routing": ("placement",),
     "manufacturing_release": ("circuit", "schematic_visual", "placement", "routing"),
-    "assembly_placement": ("manufacturing_release",),
-    "order": STAGES[:-1],
 }
 
 
@@ -55,9 +52,6 @@ def initial(project_id: str) -> dict:
         "risks": [],
         "approvals": {
             "design_critical_substitution": "PENDING",
-            "assembly_placement": "PENDING",
-            "final_price": "PENDING",
-            "payment": "PENDING",
         },
         "approval_evidence": {name: [] for name in APPROVALS},
         "manual_browser_edits_present": False,
@@ -101,27 +95,6 @@ def validate(state: dict) -> list[str]:
             errors.append(f"approval {name}: invalid status")
         if approvals.get(name) in {"APPROVED", "REJECTED"} and not state.get("approval_evidence", {}).get(name):
             errors.append(f"approval {name}: decision requires evidence")
-    if state.get("manual_browser_edits_present") and stages.get("assembly_placement", {}).get("status") == "PASS":
-        errors.append("assembly_placement cannot PASS with manual browser edits")
-    if stages.get("assembly_placement", {}).get("status") == "PASS" and approvals.get("assembly_placement") != "APPROVED":
-        errors.append("assembly_placement PASS requires its independent approval")
-    if stages.get("order", {}).get("status") == "PASS":
-        missing = [name for name in APPROVALS if approvals.get(name) != "APPROVED"]
-        if missing:
-            errors.append(f"order PASS requires all independent approvals: {missing}")
-    if approvals.get("assembly_placement") == "APPROVED" and stages.get("assembly_placement", {}).get("status") not in {"USER_REVIEW", "PASS"}:
-        errors.append("assembly placement approval requires completed evidence at USER_REVIEW or PASS")
-    if approvals.get("final_price") == "APPROVED":
-        if stages.get("assembly_placement", {}).get("status") != "PASS":
-            errors.append("final price approval requires PASS assembly placement")
-        if stages.get("order", {}).get("status") not in {"USER_REVIEW", "PASS"}:
-            errors.append("final price approval requires an order stage at USER_REVIEW or PASS")
-    if approvals.get("payment") == "APPROVED":
-        missing_prior = [name for name in APPROVALS[:-1] if approvals.get(name) != "APPROVED"]
-        if missing_prior:
-            errors.append(f"payment approval requires all prior approvals: {missing_prior}")
-        if stages.get("order", {}).get("status") not in {"USER_REVIEW", "PASS"}:
-            errors.append("payment approval requires an order stage at USER_REVIEW or PASS")
     return errors
 
 
@@ -159,8 +132,8 @@ def main() -> int:
         if args.command == "set-stage":
             if args.status == "PASS" and not args.evidence:
                 raise SystemExit("PASS requires at least one --evidence")
-            if args.stage == "assembly_placement" and args.status == "PASS" and state.get("manual_browser_edits_present"):
-                raise SystemExit("assembly_placement cannot PASS with manual browser edits")
+            if args.stage == "manufacturing_release" and args.status == "PASS" and state.get("manual_browser_edits_present"):
+                raise SystemExit("manufacturing_release cannot PASS with manual browser edits; regenerate the CPL from source")
             if args.stage == "placement" and args.status in {"PASS", "USER_REVIEW"} and state["stages"]["sourcing"]["status"] != "PASS":
                 raise SystemExit("placement freeze requires sourcing PASS at the transition")
             state["stages"][args.stage] = {"status": args.status, "evidence": args.evidence}
@@ -172,8 +145,6 @@ def main() -> int:
         elif args.command == "set-approval":
             if args.status in {"APPROVED", "REJECTED"} and not args.evidence:
                 raise SystemExit("an approval decision requires --evidence")
-            if args.approval == "assembly_placement" and args.status == "APPROVED" and state.get("manual_browser_edits_present"):
-                raise SystemExit("assembly placement cannot be approved with manual browser edits")
             state["approvals"][args.approval] = args.status
             state["approval_evidence"][args.approval] = args.evidence
             errors = validate(state)
@@ -186,14 +157,6 @@ def main() -> int:
             for stage in affected:
                 state["stages"][stage]["status"] = "BLOCKED"
                 state["stages"][stage]["evidence"] = []
-            if "assembly_placement" in affected:
-                state["approvals"]["assembly_placement"] = "PENDING"
-                state["approval_evidence"]["assembly_placement"] = []
-            if "order" in affected:
-                state["approvals"]["final_price"] = "PENDING"
-                state["approvals"]["payment"] = "PENDING"
-                state["approval_evidence"]["final_price"] = []
-                state["approval_evidence"]["payment"] = []
             if args.change in {"product-definition", "netlist", "circuit", "mpn-package", "bom"}:
                 state["approvals"]["design_critical_substitution"] = "PENDING"
                 state["approval_evidence"]["design_critical_substitution"] = []

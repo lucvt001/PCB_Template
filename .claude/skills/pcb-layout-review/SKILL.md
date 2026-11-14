@@ -8,10 +8,11 @@ description: Audit, finish, or port PCB placement and routing using circuit inte
 Use the humanized architecture and circuit constraints as placement policy, not
 reference-number order or one global wire-length score. Read
 [references/layout-review-checklist.md](references/layout-review-checklist.md)
-and [references/proven-lessons.md](references/proven-lessons.md). Record the
+(including its "Proven lessons" section). Record the
 gate with [references/layout-review-record.md](references/layout-review-record.md)
-and select an evidence path from
-[references/eda-adapters.md](references/eda-adapters.md).
+and use the KiCad commands in
+[references/kicad-adapter.md](references/kicad-adapter.md). Gerber/drill/CPL or
+images alone permit DFM and visual review only, not connectivity proof.
 
 Also read, when they apply:
 

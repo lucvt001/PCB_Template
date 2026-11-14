@@ -27,9 +27,10 @@ review-only unless the user asks to change the authoritative circuit source.
    point, application/typical circuit, component selection, and layout guidelines.
    If a datasheet is missing, ask the user for it (or for permission to download it
    from the manufacturer) rather than designing from memory.
-5. Select the evidence path in
-   [references/evidence-adapters.md](references/evidence-adapters.md); never
-   claim an edit or verification stronger than the source permits.
+5. Work from the native KiCad source (`.kicad_sch`, libraries, netlist export; see
+   `../pcb-layout-review/references/kicad-adapter.md` for commands). If only a
+   PDF/image is available, findings are transcription-limited: don't implement
+   electrical corrections without native source or a trusted netlist.
 
 ## Schematic structure
 

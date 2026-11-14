@@ -7,7 +7,11 @@ description: Build and verify a vendor-neutral PCB/PCBA manufacturing release fr
 
 Release artifacts; do not redesign the circuit or layout inside this stage.
 Read [references/release-checklist.md](references/release-checklist.md) and
-[references/eda-release-adapters.md](references/eda-release-adapters.md).
+the KiCad export commands in
+[../pcb-layout-review/references/kicad-adapter.md](../pcb-layout-review/references/kicad-adapter.md).
+Record tool/version, source revision, origin, units, and every command used. If
+only derived fabrication files exist, mark native-source traceability BLOCKED or
+USER_REVIEW; never reconstruct a revision from filenames.
 
 ## Preflight
 
