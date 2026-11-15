@@ -49,3 +49,4 @@ pcb/.history
 .pcba-workflow/netlist*.xml
 .pcba-workflow/pos.csv
 .pcba-workflow/reviews/**/export*/
+.pcba-workflow/env.json
